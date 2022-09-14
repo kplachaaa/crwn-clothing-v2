@@ -1,4 +1,4 @@
-import { useParams, useState, useEffect } from "react-router-dom";
+import { useParams, useEffect, useState } from "react-router-dom";
 import { useContext } from "react";
 
 import ProductCard from "../../components/product-card/product-car.component";
@@ -12,7 +12,7 @@ const Category = () => {
 
    useEffect(() => {
     setProducts(categoriesMap[category]);
-   }, [category, categoriesMap])
+   }, [category, categoriesMap]);
 
    return ( 
     <div className="category-container">
