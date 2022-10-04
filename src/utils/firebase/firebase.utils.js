@@ -20,6 +20,7 @@ import {
   query,
   getDocs,
 } from "firebase/firestore";
+import { resolvePath } from "react-router-dom";
 
 const firebaseConfig = {
     apiKey: "AIzaSyChXa-LN4bzHYcYoznO9BxUx1Xsqf2ljRg",
@@ -64,13 +65,7 @@ const firebaseConfig = {
     const q = query(collectionRef);
 
     const querySnapshot = await getDocs(q);
-    const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
-      const {title, items} = docSnapshot.data();
-      acc[title.toLowerCase()] = items;
-      return acc;
-    }, {});
-
-    return categoryMap;
+    return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
   }
 
 
@@ -99,7 +94,7 @@ const firebaseConfig = {
     }
 
 
-    return userDocRef;
+    return userSnapshot;
 
   };
 
@@ -119,3 +114,16 @@ const firebaseConfig = {
   export const signOutUser = async () => await signOut(auth);
 
   export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback );
+
+  export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = onAuthStateChanged(
+        auth, 
+        (userAuth) => {
+          unsubscribe();
+          resolve(userAuth);
+        },
+        reject
+      );
+    });
+  };
